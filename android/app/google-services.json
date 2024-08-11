@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "967168672492",
+    "project_id": "blog-app-daa98",
+    "storage_bucket": "blog-app-daa98.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:967168672492:android:a0600efa35346ec039dbc9",
+        "android_client_info": {
+          "package_name": "com.example.blog_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpbaJ863tWPI87JjRMzZeQhwoiCC9Oal4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
