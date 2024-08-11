@@ -18,7 +18,7 @@ class _DownloadsState extends State<Downloads> {
         backgroundColor: Colors.black,
         leading: IconButton(
           icon: const FaIcon(
-              FontAwesomeIcons.arrowLeft,color: Colors.white),
+              FontAwesomeIcons.arrowLeft,color: Colors.black),
           onPressed: (){
           Navigator.pop(context);
         },
