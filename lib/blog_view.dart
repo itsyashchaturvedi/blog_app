@@ -121,9 +121,9 @@ class _BlogViewState extends State<BlogView>{
               SingleChildScrollView(
                 child: Row(
                   children: [
-                    Expanded(child: BlogItem(isFullWidth: false, isFullShade: false)),
+                    Expanded(child: BlogItem(isFullWidth: false, isFullShade: false, imageUrl: '', title: '', date: '',)),
                     const SizedBox(width: 10),
-                    Expanded(child: BlogItem(isFullWidth: false, isFullShade: false)),
+                    Expanded(child: BlogItem(isFullWidth: false, isFullShade: false, imageUrl: '', date: '', title: '',)),
                   ],
                 ),
               ),

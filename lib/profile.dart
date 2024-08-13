@@ -3,6 +3,7 @@ import 'package:blog_app/downloads.dart';
 import 'package:blog_app/info.dart';
 import 'package:blog_app/settings.dart';
 import 'package:blog_app/user_post.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -45,11 +46,17 @@ class _ProfileState extends State<Profile> {
                 child: SizedBox(
                   height: 155,
                   width: MediaQuery.of(context).size.width-40,
-                  child: const Hero(
+                  child:  Hero(
                     tag: 'info',
                     child: CircleAvatar(
-                        child: FaIcon(FontAwesomeIcons.user,size: 84,color: Colors.purple,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Image.network(
+                            FirebaseAuth.instance.currentUser!.photoURL
+                              ??
+                              "https://cdn-icons-png.flaticon.com/512/21/21104.png",fit: BoxFit.fill,width: 150,),
                       ),
+
                     ),
                   ),
                 ),
