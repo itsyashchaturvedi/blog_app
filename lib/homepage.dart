@@ -1,25 +1,39 @@
+<<<<<<< HEAD
 import 'dart:convert';
 
 import 'package:blog_app/blog_view.dart';
+=======
+>>>>>>> e844433fbc0281b0e26edda5c1830796f85050fb
 import 'package:blog_app/blogitem.dart';
 import 'package:blog_app/category.dart';
 import 'package:blog_app/navigation.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:http/http.dart';
 
 import 'models/blog_model.dart';
 import 'models/fetch_blog.dart';
+=======
+>>>>>>> e844433fbc0281b0e26edda5c1830796f85050fb
 
 class BlogHomePage extends StatefulWidget {
   const BlogHomePage({super.key});
 
   @override
+<<<<<<< HEAD
   State<BlogHomePage> createState() => _BloghomePageState();
 }
 
 class _BloghomePageState extends State<BlogHomePage> {
 
   final List<Map<String, String>> posts = [
+=======
+  State<BlogHomePage> createState() => _BolghomepageState();
+}
+
+class _BolghomepageState extends State<BlogHomePage> {
+  final List<Map<String, String>> _posts = [
+>>>>>>> e844433fbc0281b0e26edda5c1830796f85050fb
     {
       'title': 'Surfing Adventures',
       'date': 'Aug 25, 2024',
@@ -42,6 +56,7 @@ class _BloghomePageState extends State<BlogHomePage> {
       'image': 'https://via.placeholder.com/150',
     },
   ];
+<<<<<<< HEAD
   late FetchBlog fetchBlog;
   late bool isTrue;
   @override
@@ -58,6 +73,9 @@ class _BloghomePageState extends State<BlogHomePage> {
       isTrue=false;
     });
   }
+=======
+
+>>>>>>> e844433fbc0281b0e26edda5c1830796f85050fb
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,6 +151,7 @@ class _BloghomePageState extends State<BlogHomePage> {
                 ),
               ),
               const SizedBox(height: 10),
+<<<<<<< HEAD
               isTrue?Center(child: CircularProgressIndicator(),):
               InkWell(
                 onTap: (){
@@ -142,12 +161,42 @@ class _BloghomePageState extends State<BlogHomePage> {
                       imageUrl:fetchBlog.imgUrl ,
                       title: "" ,
                       date: ""),
+=======
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _posts.length,
+                  itemBuilder: (context, index) {
+                    final post = _posts[index];
+                    return Column(
+                      children: [
+                        InkWell(
+                          child: BlogItem(
+                            isFullWidth: false,
+                            isFullShade: false,
+                            imageUrl: post['image']!,
+                            title: post['title']!,
+                            date: post['date']!,
+                          ),
+                          onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> Navigation(isTrue: true,)));
+                              },
+                        ),
+                        const SizedBox(height: 10), 
+                      ],
+                    );
+                  },
+                ),
+>>>>>>> e844433fbc0281b0e26edda5c1830796f85050fb
               ),
             ],
           ),
         ),
       ),
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> e844433fbc0281b0e26edda5c1830796f85050fb
     );
   }
 }
