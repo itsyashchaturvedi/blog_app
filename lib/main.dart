@@ -1,14 +1,23 @@
 import 'package:blog_app/blog_view.dart';
+import 'package:blog_app/firebase_options.dart';
+import 'package:blog_app/models/blog_model.dart';
+import 'package:blog_app/models/fetch_blog.dart';
+import 'package:blog_app/navigation.dart';
 import 'package:blog_app/profile.dart';
 import 'package:blog_app/splash.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 import 'add.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(const MyApp());
 }
 
@@ -20,8 +29,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
-  int currentIndex=0;
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -31,7 +38,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const SplashScreen(),
+      home: FirebaseAuth.instance.currentUser==null?const SplashScreen(): Navigation(),
     );
   }
 }

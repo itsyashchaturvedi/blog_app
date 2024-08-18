@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:blog_app/changes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,7 +34,7 @@ class _InfoState extends State<Info> {
             children: [
               const Text("Add Profile",style: TextStyle(fontSize: 24,fontWeight: FontWeight.w500,fontStyle: FontStyle.italic),),
               Padding(
-                padding: EdgeInsets.all(55.0),
+                padding: const EdgeInsets.all(55.0),
                 child: Row(
                   children: [
                     Column(
@@ -95,8 +96,8 @@ class _InfoState extends State<Info> {
               borderRadius: BorderRadius.circular(50),
               gradient: const LinearGradient(
                   colors: <Color>[
-                    Colors.purpleAccent,
-                    Colors.deepPurpleAccent,
+                    Colors.greenAccent,
+                    Colors.green,
                   ]
               )
             ),
@@ -119,8 +120,13 @@ class _InfoState extends State<Info> {
                                       child: Image.file(
                                         settingImage,
                                         fit: BoxFit.cover,width: 150,height: 250,),
-                                    ):const FaIcon(
-                                      FontAwesomeIcons.user,size: 70,),
+                                    ):ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: Image.network(
+                                          FirebaseAuth.instance.currentUser!.photoURL??
+                                          "https://cdn-icons-png.flaticon.com/512/21/21104.png",
+                                        fit: BoxFit.cover,width: 150,height: 270,),
+                                    ),
                                   ),
                                   Positioned(left: 90,top: 85,child: CircleAvatar(
                                     backgroundColor: Colors.indigo,
@@ -134,7 +140,7 @@ class _InfoState extends State<Info> {
                      ),
                    ),
                     ),
-                  Text(widget.name,style: const TextStyle(color: Colors.black,fontSize: 25,fontWeight: FontWeight.w600),),
+                  Text(FirebaseAuth.instance.currentUser!.displayName??widget.name,style: const TextStyle(color: Colors.black,fontSize: 25,fontWeight: FontWeight.w600),),
 
                   const SizedBox(height: 30,),
                   const Padding(

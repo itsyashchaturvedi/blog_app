@@ -34,8 +34,8 @@ class _DataSecurityState extends State<DataSecurity> {
             borderRadius: BorderRadius.circular(50),
             gradient: const LinearGradient(
                 colors: <Color>[
-                  Colors.purpleAccent,
-                  Colors.deepPurpleAccent,
+                  Colors.greenAccent,
+                  Colors.green,
                 ]
             )
           ),

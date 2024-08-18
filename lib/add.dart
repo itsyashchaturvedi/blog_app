@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class Add extends StatefulWidget {
 class _AddState extends State<Add> {
   TextEditingController title=TextEditingController();
   TextEditingController desc=TextEditingController();
+
    void getImage()async {
     Get.bottomSheet(
       Container(
@@ -41,7 +43,8 @@ class _AddState extends State<Add> {
                            settingImage=File(image!.path);
                            Navigator.pop(context);
                          });
-                       },icon:const Icon(Icons.camera ,size: 80,)),
+                       },
+                           icon:const Icon(Icons.camera ,size: 80,)),
                        const Text("Camera",style: TextStyle(fontSize: 20),)
                      ],
                    ),

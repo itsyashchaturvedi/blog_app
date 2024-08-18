@@ -50,8 +50,8 @@ class _ChangesState extends State<Changes> {
               borderRadius: BorderRadius.circular(50),
               gradient: const LinearGradient(
                   colors: <Color>[
-                    Colors.purpleAccent,
-                    Colors.deepPurpleAccent,
+                    Colors.greenAccent,
+                    Colors.green,
                   ]
               )
           ),

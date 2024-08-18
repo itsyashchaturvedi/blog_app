@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:blog_app/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -43,8 +45,8 @@ class _SettingsState extends State<Settings> {
           decoration: BoxDecoration(
             gradient: const LinearGradient(
                 colors: <Color>[
-                  Colors.purpleAccent,
-                  Colors.deepPurpleAccent,
+                  Colors.greenAccent,
+                  Colors.green,
                 ]
             ),
             borderRadius: BorderRadius.circular(50),
@@ -137,7 +139,13 @@ class _SettingsState extends State<Settings> {
                             title: const Text("Log Out"),
                             content: const Text("Are you sure want to Log Out?"),
                             actions: [
-                              TextButton(onPressed: (){}, child: const Text("Yes")),
+                              TextButton(onPressed: (){
+                                setState(() {
+                                  FirebaseAuth.instance.signOut();
+                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const Loginpage()));
+                                });
+                              },
+                                  child: const Text("Yes")),
                               TextButton(onPressed: (){
                                 Navigator.pop(context);
                               }, child: const Text("Cancel"))
@@ -147,7 +155,6 @@ class _SettingsState extends State<Settings> {
 
                       }
                       );
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(changes: "yash@gmail.com", type: "Email")));
                     },
                     child:const Row(
                       children: [

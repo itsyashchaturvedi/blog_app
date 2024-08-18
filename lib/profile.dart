@@ -3,6 +3,7 @@ import 'package:blog_app/downloads.dart';
 import 'package:blog_app/info.dart';
 import 'package:blog_app/settings.dart';
 import 'package:blog_app/user_post.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -33,8 +34,8 @@ class _ProfileState extends State<Profile> {
                   borderRadius: BorderRadius.only(bottomRight: Radius.circular(200),bottomLeft: Radius.circular(200)),
                   gradient: LinearGradient(
                     colors: <Color>[
-                      Colors.purpleAccent,
-                      Colors.deepPurpleAccent,
+                      Colors.greenAccent,
+                      Colors.green,
                     ]
                   )
                 ),
@@ -45,11 +46,17 @@ class _ProfileState extends State<Profile> {
                 child: SizedBox(
                   height: 155,
                   width: MediaQuery.of(context).size.width-40,
-                  child: const Hero(
+                  child:  Hero(
                     tag: 'info',
                     child: CircleAvatar(
-                        child: FaIcon(FontAwesomeIcons.user,size: 84,color: Colors.purple,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Image.network(
+                            FirebaseAuth.instance.currentUser!.photoURL
+                              ??
+                              "https://cdn-icons-png.flaticon.com/512/21/21104.png",fit: BoxFit.fill,width: 150,),
                       ),
+
                     ),
                   ),
                 ),
@@ -59,7 +66,7 @@ class _ProfileState extends State<Profile> {
           Center(
             child: InkWell(
               borderRadius: BorderRadius.circular(35),
-              highlightColor: Colors.purpleAccent,
+              highlightColor: Colors.greenAccent,
               splashColor: Colors.transparent,
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=> Info(name: "Yash Chaturvedi",)));
@@ -69,7 +76,7 @@ class _ProfileState extends State<Profile> {
                 width: MediaQuery.of(context).size.width-20,
                 decoration:BoxDecoration(
                   border: Border.all(
-                    color: Colors.purple,
+                    color: Colors.white,
                   ),
                   borderRadius: BorderRadius.circular(35)
                 ),
@@ -77,13 +84,13 @@ class _ProfileState extends State<Profile> {
                   children: [
                     Padding(
                       padding: EdgeInsets.fromLTRB(12, 0, 24.5, 0),
-                      child: FaIcon(FontAwesomeIcons.user,color: Colors.deepPurpleAccent,),
+                      child: FaIcon(FontAwesomeIcons.user,color: Colors.green,),
                     ),
                     Text("Profile & Information",style: TextStyle(color: Colors.white,fontSize: 20),),
                     Expanded(child: SizedBox()),
                     Padding(
                       padding:  EdgeInsets.fromLTRB(5, 0, 12, 0),
-                      child: Icon(Icons.chevron_right,color: Colors.deepPurpleAccent,size: 35,)
+                      child: FaIcon(Icons.chevron_right,color: Colors.green,size: 35,)
                     )
                   ],
                 ),
@@ -93,7 +100,7 @@ class _ProfileState extends State<Profile> {
           const SizedBox(height: 27,),
           Center(
             child: InkWell(
-              highlightColor: Colors.purpleAccent,
+              highlightColor: Colors.greenAccent,
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=> const DataSecurity()));
               },
@@ -103,20 +110,20 @@ class _ProfileState extends State<Profile> {
                 width: MediaQuery.of(context).size.width-20,
                 decoration:BoxDecoration(
                   border: Border.all(
-                    color: Colors.purple
+                    color: Colors.white
                   ),
                   borderRadius: BorderRadius.circular(35)
                 ),
-                child: Row(
+                child: const Row(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(12, 0, 24.5, 0),
-                      child: FaIcon(Icons.security,color: Colors.deepPurpleAccent,),
-                    ),
-                    const Text("Data Privacy and Security",style: TextStyle(color: Colors.white,fontSize: 20,),),
                     Padding(
-                        padding: const EdgeInsets.fromLTRB(33, 0, 0, 0),
-                        child: IconButton(onPressed: (){},icon:const FaIcon(Icons.chevron_right,color: Colors.deepPurpleAccent,size: 35,),)
+                      padding: EdgeInsets.fromLTRB(12, 0, 24.5, 0),
+                      child: FaIcon(Icons.security,color: Colors.green,),
+                    ),
+                    Text("Data Privacy and Security",style: TextStyle(color: Colors.white,fontSize: 20,),),
+                    Padding(
+                        padding: EdgeInsets.fromLTRB(50, 0, 0, 0),
+                        child: FaIcon(Icons.chevron_right,color: Colors.green,size: 35,),
                     )
                   ],
                 ),
@@ -127,7 +134,7 @@ class _ProfileState extends State<Profile> {
           Center(
             child: InkWell(
               borderRadius: BorderRadius.circular(35.0),
-              highlightColor: Colors.purpleAccent,
+              highlightColor: Colors.greenAccent,
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=> Downloads()));
               },
@@ -136,7 +143,7 @@ class _ProfileState extends State<Profile> {
                 width: MediaQuery.of(context).size.width-20,
                 decoration:BoxDecoration(
                   border: Border.all(
-                    color: Colors.purple
+                    color: Colors.white
                   ),
                   borderRadius: BorderRadius.circular(35)
                 ),
@@ -144,7 +151,7 @@ class _ProfileState extends State<Profile> {
                   children: [
                     Padding(
                       padding: EdgeInsets.fromLTRB(12, 0, 24.5, 0),
-                      child: Icon(Icons.download,color: Colors.deepPurpleAccent,),
+                      child: Icon(Icons.download,color: Colors.green,),
                     ),
                     Text("Downloads",style: TextStyle(color: Colors.white,fontSize: 20),),
                     Expanded(child: SizedBox()),
@@ -157,7 +164,7 @@ class _ProfileState extends State<Profile> {
           Center(
             child: InkWell(
               borderRadius: BorderRadius.circular(35.0),
-              highlightColor: Colors.purpleAccent,
+              highlightColor: Colors.greenAccent,
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=> const UserPost()));
               },
@@ -166,7 +173,7 @@ class _ProfileState extends State<Profile> {
                 width: MediaQuery.of(context).size.width-20,
                 decoration:BoxDecoration(
                     border: Border.all(
-                        color: Colors.purple
+                        color: Colors.white
                     ),
                     borderRadius: BorderRadius.circular(35)
                 ),
@@ -174,7 +181,7 @@ class _ProfileState extends State<Profile> {
                   children: [
                     Padding(
                       padding: EdgeInsets.fromLTRB(12, 0, 24.5, 0),
-                      child: Icon(Icons.post_add_sharp,color: Colors.deepPurpleAccent,),
+                      child: Icon(Icons.post_add_sharp,color: Colors.green,),
                     ),
                     Text("Posts",style: TextStyle(color: Colors.white,fontSize: 20),),
                     Expanded(child: SizedBox()),
@@ -190,28 +197,27 @@ class _ProfileState extends State<Profile> {
                 Navigator.push(context, MaterialPageRoute(builder: (context)=> const Settings()));
               },
               borderRadius: BorderRadius.circular(35),
-              highlightColor: Colors.purpleAccent,
+              highlightColor: Colors.greenAccent,
               child: Container(
                 height: 55,
                 width: MediaQuery.of(context).size.width-20,
                 decoration:BoxDecoration(
                   border: Border.all(
-                    color: Colors.purple
+                    color: Colors.white
                   ),
                   borderRadius: BorderRadius.circular(35)
                 ),
-                child: Row(
+                child: const Row(
                   children: [
-                    const Padding(
-                      padding:  EdgeInsets.fromLTRB(12, 0, 24.5, 0),
-                      child: FaIcon(Icons.settings,color: Colors.deepPurpleAccent,),
-                    ),
-                    const Text("Settings",style: TextStyle(color: Colors.white,fontSize: 20),),
-                    const Expanded(child: SizedBox()),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(5, 0, 12, 0),
-                      child: IconButton(onPressed: (){},icon:FaIcon(Icons.chevron_right,color: Colors.deepPurpleAccent,size: 35,),)
-                    )
+                      padding:  EdgeInsets.fromLTRB(12, 0, 24.5, 0),
+                      child: FaIcon(Icons.settings,color: Colors.green,),
+                    ),
+                    Text("Settings",style: TextStyle(color: Colors.white,fontSize: 20),),
+                    Expanded(child: SizedBox()),
+                    Padding(
+                      padding:  EdgeInsets.fromLTRB(5, 0, 12, 0),
+                      child:  FaIcon(Icons.chevron_right,color: Colors.green,size: 35,),)
                   ],
                 ),
               ),
