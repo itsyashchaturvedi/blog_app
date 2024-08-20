@@ -84,7 +84,6 @@ class _InfoState extends State<Info> {
   late DocumentSnapshot name;
 
   void getName()async{
-    print(widget.uid);
     name=await FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").get();
     setState(() {
       isYes=false;

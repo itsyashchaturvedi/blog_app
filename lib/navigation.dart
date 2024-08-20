@@ -36,6 +36,7 @@ class _NavigationState extends State<Navigation> {
   @override
   void initState() {
     super.initState();
+    print(widget.uid);
     //  screens[2]=Profile(uid: widget.uid,);
     if (widget.isTrue) {
       screens = [
@@ -44,14 +45,15 @@ class _NavigationState extends State<Navigation> {
           desc: widget.desc,
           title: widget.title, 
         ),
-        Add(),
-        Profile(),
+        const Add(),
+        Profile(uid: widget.uid,),
       ];
-    } else {
+    }
+    else {
       screens = [
-        BlogHomePage(),
-        Add(),
-        Profile(),
+        const BlogHomePage(),
+        const Add(),
+        Profile(uid: widget.uid,),
       ];
     }
   }
