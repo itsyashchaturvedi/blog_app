@@ -7,8 +7,6 @@ import 'package:blog_app/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
-import 'models/blog_model.dart';
-import 'models/fetch_blog.dart';
 
 class BlogHomePage extends StatefulWidget {
   const BlogHomePage({super.key});
@@ -42,22 +40,7 @@ class _BloghomePageState extends State<BlogHomePage> {
       'image': 'https://via.placeholder.com/150',
     },
   ];
-  late FetchBlog fetchBlog;
-  late bool isTrue;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    isTrue=true;
-    get();
-  }
-  Future<void> get()async{
-    fetchBlog= await BlogModel.fetchBlogs();
-    print(fetchBlog.title);
-    setState(() {
-      isTrue=false;
-    });
-  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,13 +116,12 @@ class _BloghomePageState extends State<BlogHomePage> {
                 ),
               ),
               const SizedBox(height: 10),
-              isTrue?Center(child: CircularProgressIndicator(),):
               InkWell(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Navigation(isTrue: true,image: fetchBlog.imgUrl,author: fetchBlog.author,title: fetchBlog.title,desc: fetchBlog.desc,)));
+              //    Navigator.push(context, MaterialPageRoute(builder: (context)=> Navigation(uid: "",isTrue: true,image: fetchBlog.imgUrl,author: fetchBlog.author,title: fetchBlog.title,desc: fetchBlog.desc,)));
                 },
                 child: BlogItem(isFullWidth: false,
-                      imageUrl:fetchBlog.imgUrl ,
+                      imageUrl:"" ,
                       title: "" ,
                       date: ""),
               ),

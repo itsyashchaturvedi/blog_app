@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -9,28 +10,51 @@ class Changes extends StatefulWidget {
   bool numKeyboard;
   bool dateInfo;
   String dob;
-  Changes({this.dob="2001-01-15",this.dateInfo=false,super.key,required this.changes,required this.type,this.numKeyboard=false});
+  String uid;
+  Changes({this.uid="",this.dob="2001-01-15",this.dateInfo=false,super.key,required this.changes,required this.type,this.numKeyboard=false});
 
   @override
   State<Changes> createState() => _ChangesState();
 }
 
 class _ChangesState extends State<Changes> {
+  late DocumentSnapshot fire;
+  late Map<String,dynamic> firebase;
+  late bool isYes;
+  void scanFirebase() async {
+    fire= await FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").get();
+    setState(() {
+      firebase=fire.data() as Map<String, dynamic>;
+      isYes=false;
+    });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.dateInfo){isYes=true;}
+    else{isYes=false;}
+    scanFirebase();
+  }
   @override
   Widget build(BuildContext context) {
+
     DateTime? date;
     DateTime userDOb=DateTime.parse(widget.dob);
     String finalDate= "${userDOb.day}-${userDOb.month}-${userDOb.year}";
-    Future<void> getDate() async{
-      date = await showDatePicker(
-        context: context,
-        initialDate: DateTime(DateTime.now().year-15),
-        firstDate: DateTime(1950),
-        lastDate: DateTime(DateTime.now().year-15)
-      );
+    Future<void> getDate()async {
+      setState(() async {
+        date = await showDatePicker(
+            context: context,
+            initialDate: DateTime(DateTime.now().year-15),
+            firstDate: DateTime(1950),
+            lastDate: DateTime(DateTime.now().year-15)
+        );
+        finalDate= "${date?.day}-${date?.month}-${date?.year}";
+      });
     }
     TextEditingController controller=TextEditingController();
-    return Scaffold(
+    return isYes?const Center(child: CircularProgressIndicator(color: Colors.greenAccent,),):Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         leading: IconButton(
@@ -86,7 +110,7 @@ class _ChangesState extends State<Changes> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text("Current Date of Birth: ${finalDate}",style: const TextStyle(color: Colors.black,fontSize: 17,fontStyle: FontStyle.italic,fontWeight: FontWeight.w500),),
+                                  child: Text("Current Date of Birth: ${firebase.containsKey("dob")?fire["dob"]:""}",style: const TextStyle(color: Colors.black,fontSize: 17,fontStyle: FontStyle.italic,fontWeight: FontWeight.w500),),
                                 ),
                                 const Expanded(child: SizedBox()),
                                 IconButton(onPressed: ()
@@ -140,8 +164,13 @@ class _ChangesState extends State<Changes> {
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please Select Your Date of Birth",style: TextStyle(color: Colors.red),)));
                         }
                         else {
-                          Fluttertoast.showToast(msg: "Date of Birth Updated!");
-                          Navigator.pop(context);
+
+                            FirebaseFirestore.instance.collection("Users").doc(
+                                "${widget.uid}").update({"dob": "${finalDate}"});
+                            Fluttertoast.showToast(
+                                msg: "Date of Birth Updated!");
+                            Navigator.pop(context);
+
                         }
                       }
                       else {
@@ -157,6 +186,9 @@ class _ChangesState extends State<Changes> {
                                   style: TextStyle(color: Colors.red),)));
                           }
                           else {
+                            print(controller.text);
+                            FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").
+                            update({"phoneNumber": int.parse(controller.text)});
                             Fluttertoast.showToast(msg: "Contact Info Updated!");
                             Navigator.pop(context);
                           }
@@ -186,6 +218,7 @@ class _ChangesState extends State<Changes> {
                         else {
                           Fluttertoast.showToast(msg: "${widget.type} Updated!");
                           Navigator.pop(context);
+                          FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").update({"name":"${controller.text.trim()}"});
                         }
                       }
                     },

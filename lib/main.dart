@@ -1,7 +1,5 @@
 import 'package:blog_app/blog_view.dart';
 import 'package:blog_app/firebase_options.dart';
-import 'package:blog_app/models/blog_model.dart';
-import 'package:blog_app/models/fetch_blog.dart';
 import 'package:blog_app/navigation.dart';
 import 'package:blog_app/profile.dart';
 import 'package:blog_app/splash.dart';
@@ -38,7 +36,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: FirebaseAuth.instance.currentUser==null?const SplashScreen(): Navigation(),
+      home: FirebaseAuth.instance.currentUser==null?const SplashScreen(): Navigation(uid: FirebaseAuth.instance.currentUser!.uid,),
     );
   }
 }

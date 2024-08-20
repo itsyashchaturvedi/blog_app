@@ -5,6 +5,7 @@ import 'package:blog_app/signup.dart';
 import 'package:blog_app/colorpack.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -19,6 +20,10 @@ class Loginpage extends StatefulWidget {
 class _LoginpageState extends State<Loginpage> {
   bool _isHovering = false;
   bool _isObsured = true;
+  void facebookSignin() async{
+    await FacebookAuth.i.login(permissions: ['email','public_profile']);
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Navigation(uid: "",)));
+  }
   void googleSignin() async{
     GoogleSignIn googleSignIn=GoogleSignIn();
     try{
@@ -35,7 +40,7 @@ class _LoginpageState extends State<Loginpage> {
     catch(error){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${error.toString()}")));
     }
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Navigation()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Navigation(uid: "",)));
   }
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailcontroller = TextEditingController();
@@ -155,9 +160,9 @@ class _LoginpageState extends State<Loginpage> {
                             style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(35))),
-                            onPressed: () {
+                            onPressed: ()async {
                               if (_formKey.currentState!.validate()) {
-                                FirebaseAuth.instance
+                                await FirebaseAuth.instance
                                     .signInWithEmailAndPassword(
                                         email: emailcontroller.text,
                                         password: passwordcontroller.text)
@@ -165,24 +170,25 @@ class _LoginpageState extends State<Loginpage> {
                                   Fluttertoast.showToast(
                                     msg: "Welcome to Syllex",
                                     toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.CENTER,
+                                    gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
                                     backgroundColor: Colors.grey,
                                     textColor: Colors.white,
                                     fontSize: 16.0,
                                   );
+                                  print(FirebaseAuth.instance.currentUser!.uid);
                                   // Navigate to the home page
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Navigation()),
+                                        builder: (context) => Navigation(uid: FirebaseAuth.instance.currentUser!.uid.toString(),)),
                                   );
                                 }).onError((error, stackTrace){
                                           print("Error:$error");
                                         });
                               }
                             },
-                            child: Text(
+                            child: const Text(
                               "Continue",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -251,7 +257,9 @@ class _LoginpageState extends State<Loginpage> {
                             color: AppColors.textcolor,
                             borderRadius: BorderRadius.circular(5)),
                         child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              facebookSignin();
+                            },
                             icon: Icon(
                               FontAwesomeIcons.facebook,
                               color: Colors.black,

@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({super.key});
+  String uid;
+   Profile({this.uid="",super.key});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -17,6 +18,8 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   late double bHeight=280;
+  @override
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +72,8 @@ class _ProfileState extends State<Profile> {
               highlightColor: Colors.greenAccent,
               splashColor: Colors.transparent,
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> Info(name: "Yash Chaturvedi",)));
+                print(widget.uid);
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> Info(name: "Yash Chaturvedi",uid: widget.uid,)));
               },
               child: Container(
                 height: 55,

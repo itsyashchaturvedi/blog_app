@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:blog_app/changes.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Info extends StatefulWidget {
   String name;
-  Info({super.key,required this.name});
+  String uid;
+  Info({super.key,this.uid="",required this.name});
 
   @override
   State<Info> createState() => _InfoState();
@@ -19,6 +21,7 @@ class Info extends StatefulWidget {
 
 class _InfoState extends State<Info> {
   bool isDone=false;
+  late bool isYes;
   dynamic settingImage;
   void getImage()async {
     Get.bottomSheet(
@@ -61,6 +64,10 @@ class _InfoState extends State<Info> {
                             settingImage=File(image!.path);
                             Navigator.pop(context);
                           });
+                          Map<String,dynamic> img={
+                            "image":""
+                          };
+                        //  FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").up;
                         },
                             icon:const Icon(Icons.image ,size: 80,)),
                         const Text("Gallery",style: TextStyle(fontSize: 20),)
@@ -74,9 +81,26 @@ class _InfoState extends State<Info> {
         )
     );
   }
+  late DocumentSnapshot name;
+
+  void getName()async{
+    print(widget.uid);
+    name=await FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").get();
+    setState(() {
+      isYes=false;
+    });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isYes=true;
+    getName();
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isYes?const Center(child: CircularProgressIndicator(color: Colors.greenAccent,),)
+        :Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         leading: IconButton(
@@ -140,7 +164,8 @@ class _InfoState extends State<Info> {
                      ),
                    ),
                     ),
-                  Text(FirebaseAuth.instance.currentUser!.displayName??widget.name,style: const TextStyle(color: Colors.black,fontSize: 25,fontWeight: FontWeight.w600),),
+
+                  Text(FirebaseAuth.instance.currentUser!.displayName??name["name"].toString(),style: const TextStyle(color: Colors.black,fontSize: 25,fontWeight: FontWeight.w600),),
 
                   const SizedBox(height: 30,),
                   const Padding(
@@ -163,7 +188,7 @@ class _InfoState extends State<Info> {
                               padding: const EdgeInsets.all(15.0),
                               child: InkWell(
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(changes: "Yash Chaturvedi", type: "Name")));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(uid: widget.uid,changes: name["name"], type: "Name")));
                                 },
                                 child: const Row(
                                   children: [
@@ -178,7 +203,7 @@ class _InfoState extends State<Info> {
                               padding: const EdgeInsets.all(15.0),
                               child: InkWell(
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(dob: "2024-01-27",dateInfo: true,changes: "", type: "Date of Birth")));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(uid: widget.uid,dob: "2024-01-27",dateInfo: true,changes: "", type: "Date of Birth")));
                                 },
                                 child:const Row(
                                   children: [
@@ -193,7 +218,7 @@ class _InfoState extends State<Info> {
                               padding: const EdgeInsets.all(15.0),
                               child: InkWell(
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(numKeyboard: true,changes: "7900205204", type: "Contact Info")));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(numKeyboard: true,changes: name["phoneNumber"].toString(), type: "Contact Info")));
                                 },
                                 child:const Row(
                                   children: [

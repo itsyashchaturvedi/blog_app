@@ -8,10 +8,11 @@ import 'blog_view.dart';
 class Navigation extends StatefulWidget {
   final bool isTrue;
   final String image;
+  String uid;
   String title;
   String desc;
   String author;
-  Navigation({super.key,this.isTrue=false,this.image="",this.title="",this.desc="",this.author=""});
+  Navigation({super.key,required this.uid,this.isTrue=false,this.image="",this.title="",this.desc="",this.author=""});
 
   @override
   State<Navigation> createState() => _NavigationState();
@@ -30,10 +31,12 @@ class _NavigationState extends State<Navigation> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    screens[2]=Profile(uid: widget.uid,);
     if(widget.isTrue==true)
       {
         screens[0]= BlogView(imgUrl: widget.image.toString().substring(0).replaceAll("//www", "https://www"),author: widget.author,desc: widget.desc,title: widget.title,);
       }
+
   }
   final items= [
      const Icon(Icons.home,color: Colors.greenAccent,size: 32,),
