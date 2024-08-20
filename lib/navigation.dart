@@ -7,75 +7,90 @@ import 'blog_view.dart';
 
 class Navigation extends StatefulWidget {
   final bool isTrue;
-  final String image;
   String uid;
-  String title;
-  String desc;
-  String author;
-  Navigation({super.key,required this.uid,this.isTrue=false,this.image="",this.title="",this.desc="",this.author=""});
+  final String image;
+  final String title;
+  final String desc;
+  final String author;
+
+  Navigation({
+    super.key,
+    this.isTrue = false,
+    this.image = "",
+    this.title = "",
+    this.desc = "",
+    this.author = "",
+    this.uid=""
+  });
 
   @override
   State<Navigation> createState() => _NavigationState();
 }
 
 class _NavigationState extends State<Navigation> {
-  Color home=Colors.white;
-  Color add=Colors.white;
-  Color person=Colors.white;
-  List screens=[
-    BlogHomePage(),
-    Add(),
-    Profile()
-  ];
+  Color home = Colors.white;
+  Color add = Colors.white;
+  Color person = Colors.white;
+  late List<Widget> screens;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    screens[2]=Profile(uid: widget.uid,);
-    if(widget.isTrue==true)
-      {
-        screens[0]= BlogView(imgUrl: widget.image.toString().substring(0).replaceAll("//www", "https://www"),author: widget.author,desc: widget.desc,title: widget.title,);
-      }
-
+    //  screens[2]=Profile(uid: widget.uid,);
+    if (widget.isTrue) {
+      screens = [
+        BlogView(
+          imgUrl: widget.image,
+          desc: widget.desc,
+          title: widget.title, 
+        ),
+        Add(),
+        Profile(),
+      ];
+    } else {
+      screens = [
+        BlogHomePage(),
+        Add(),
+        Profile(),
+      ];
+    }
   }
-  final items= [
-     const Icon(Icons.home,color: Colors.greenAccent,size: 32,),
-      const Icon(Icons.add,color: Colors.white,size: 25,),
-     const Icon(Icons.person,color: Colors.white,size: 25,)
+
+  final items = [
+    const Icon(Icons.home, color: Colors.white, size: 32),
+    const Icon(Icons.add, color: Colors.white, size: 25),
+    const Icon(Icons.person, color: Colors.white, size: 25),
   ];
-  int currentIndex=0;
+
+  int currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      bottomNavigationBar: CurvedNavigationBar (
-          animationCurve: Curves.decelerate,
-          animationDuration: const Duration(milliseconds: 300),
-          height: 60,
-          color: Colors.white12,
-          onTap: (index){
-            setState(() {
-              if(index==0){
-                items[0]=const Icon(Icons.home,color: Colors.greenAccent,size: 32,);
-                items[1]=const Icon(Icons.add,color: Colors.white,size: 25,);
-                items[2]=const Icon(Icons.person,color: Colors.white,size: 25,);
-              }
-              if(index==1){
-                items[0]= const Icon(Icons.home,color: Colors.white,size: 25,);
-                items[1]=const Icon(Icons.add,color: Colors.greenAccent,size: 32,);
-                items[2]=const Icon(Icons.person,color: Colors.white,size: 25,);
-              }
-              if(index==2){
-                items[0]=const Icon(Icons.home,color: Colors.white,size: 25,);
-                items[1]=const Icon(Icons.add,color: Colors.white,size: 25,);
-                items[2]=const Icon(Icons.person,color: Colors.greenAccent,size: 32,);
-              }
-              currentIndex=index;
-            });
-          },
-          buttonBackgroundColor: Colors.white12,
-          backgroundColor: Colors.black12,
-          items: items
+      bottomNavigationBar: CurvedNavigationBar(
+        animationCurve: Curves.decelerate,
+        animationDuration: const Duration(milliseconds: 300),
+        height: 60,
+        color: Colors.white12,
+        onTap: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        buttonBackgroundColor: Colors.white12,
+        backgroundColor: Colors.black12,
+        items: [
+          Icon(Icons.home,
+              color: currentIndex == 0 ? Colors.greenAccent : Colors.white,
+              size: 32),
+          Icon(Icons.add,
+              color: currentIndex == 1 ? Colors.greenAccent : Colors.white,
+              size: 32),
+          Icon(Icons.person,
+              color: currentIndex == 2 ? Colors.greenAccent : Colors.white,
+              size: 32),
+        ],
       ),
       body: screens[currentIndex],
     );

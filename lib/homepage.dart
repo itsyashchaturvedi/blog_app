@@ -1,46 +1,18 @@
-import 'dart:convert';
-
-import 'package:blog_app/blog_view.dart';
-import 'package:blog_app/blogitem.dart';
-import 'package:blog_app/category.dart';
-import 'package:blog_app/navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-
+import 'package:provider/provider.dart';
+import 'controller/blogprovider.dart'; // Import your provider
+import 'blogitem.dart';
+import 'category.dart';
+import 'navigation.dart';
 
 class BlogHomePage extends StatefulWidget {
   const BlogHomePage({super.key});
 
   @override
-  State<BlogHomePage> createState() => _BloghomePageState();
+  State<BlogHomePage> createState() => _BlogHomePageState();
 }
 
-class _BloghomePageState extends State<BlogHomePage> {
-
-  final List<Map<String, String>> posts = [
-    {
-      'title': 'Surfing Adventures',
-      'date': 'Aug 25, 2024',
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'title': 'Exploring the Oceans',
-      'date': 'Aug 20, 2024',
-      'image': 'https://via.placeholder.com/150',
-    },
-
-    {
-      'title': 'Surfing Adventures',
-      'date': 'Aug 25, 2024',
-      'image': 'https://via.placeholder.com/150',
-    },
-    {
-      'title': 'Exploring the Oceans',
-      'date': 'Aug 20, 2024',
-      'image': 'https://via.placeholder.com/150',
-    },
-  ];
-
+class _BlogHomePageState extends State<BlogHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,75 +33,138 @@ class _BloghomePageState extends State<BlogHomePage> {
           padding: const EdgeInsets.only(left: 10, right: 10),
           child: Column(
             children: [
-              TextFormField(
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
-                  fillColor: Color.fromARGB(115, 91, 84, 84),
-                  hintText: "Search",
-                  hintStyle: TextStyle(color: Color.fromARGB(221, 102, 93, 93)),
-                  filled: true,
-                  border: OutlineInputBorder(),
-                ),
-              ),
+              _buildSearchBar(),
               const SizedBox(height: 20),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    CategoryIcon(Icons.surfing, 'Surfing'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.sailing, 'Sailing'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.sports_basketball, 'Basketball'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.sports_tennis, 'Tennis'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.directions_bike, 'Cycling'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.hiking, 'Hiking'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.run_circle, 'Running'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.sports_soccer, 'Soccer'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.sports_cricket, 'Cricket'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.sports_golf, 'Golf'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.fitness_center, 'Fitness'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.restaurant, 'Food'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.flight, 'Travel'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.camera_alt, 'Photography'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.palette, 'Art'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.book, 'Books'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.movie, 'Movies'),
-                  const SizedBox(width: 10,),
-                  CategoryIcon(Icons.music_note, 'Music'),
-                  ],
-                ),
-              ),
+              _buildCategoryIcons(),
               const SizedBox(height: 10),
-              InkWell(
-                onTap: (){
-              //    Navigator.push(context, MaterialPageRoute(builder: (context)=> Navigation(uid: "",isTrue: true,image: fetchBlog.imgUrl,author: fetchBlog.author,title: fetchBlog.title,desc: fetchBlog.desc,)));
-                },
-                child: BlogItem(isFullWidth: false,
-                      imageUrl:"" ,
-                      title: "" ,
-                      date: ""),
-              ),
+              _buildBlogPostsList(context),
             ],
           ),
         ),
       ),
+    );
+  }
 
+  Widget _buildSearchBar() {
+    return TextFormField(
+      style: const TextStyle(color: Colors.white),
+      decoration: const InputDecoration(
+        prefixIcon: Icon(Icons.search),
+        fillColor: Color.fromARGB(115, 91, 84, 84),
+        hintText: "Search",
+        hintStyle: TextStyle(color: Color.fromARGB(221, 102, 93, 93)),
+        filled: true,
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
+  Widget _buildCategoryIcons() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children:  [
+          CategoryIcon(Icons.surfing, 'Surfing'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.sailing, 'Sailing'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.sports_basketball, 'Basketball'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.sports_tennis, 'Tennis'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.directions_bike, 'Cycling'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.hiking, 'Hiking'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.run_circle, 'Running'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.sports_soccer, 'Soccer'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.sports_cricket, 'Cricket'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.sports_golf, 'Golf'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.fitness_center, 'Fitness'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.restaurant, 'Food'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.flight, 'Travel'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.camera_alt, 'Photography'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.palette, 'Art'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.book, 'Books'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.movie, 'Movies'),
+          SizedBox(width: 10),
+          CategoryIcon(Icons.music_note, 'Music'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBlogPostsList(BuildContext context) {
+    return Expanded(
+      child: FutureBuilder(
+        future: Provider.of<BlogPost>(context, listen: false).getPost(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                "Error loading posts: ${snapshot.error}",
+                style: TextStyle(color: Colors.red),
+              ),
+            );
+          }
+
+          final blogPostProvider = Provider.of<BlogPost>(context);
+          if (blogPostProvider.postList == null || blogPostProvider.postList.isEmpty) {
+            return Center(
+              child: Text(
+                "No posts available",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+          return ListView.builder(
+            itemCount: blogPostProvider.postList.length,
+            itemBuilder: (context, index) {
+              final post = blogPostProvider.postList[index];
+              return Column(
+                children: [
+                  InkWell(
+                    child: BlogItem(
+                      isFullWidth: false,
+                      isFullShade: false,
+                      imageUrl: post.imgUrl ?? 'https://default-image-url.com',
+                      title: post.title ?? 'No Title',
+                    ),
+                    onTap: () {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Navigation(
+                              isTrue: true,
+                              image: post.imgUrl,
+                              title: post.title,
+                              desc: post.desc,
+                            ),
+                          ),
+                        );
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

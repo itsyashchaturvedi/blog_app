@@ -1,10 +1,9 @@
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get/get.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:blog_app/controller/blogprovider.dart';
+import 'package:blog_app/homepage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+// Import the BlogPost provider
 
 class Add extends StatefulWidget {
   const Add({super.key});
@@ -14,73 +13,21 @@ class Add extends StatefulWidget {
 }
 
 class _AddState extends State<Add> {
-  TextEditingController title=TextEditingController();
-  TextEditingController desc=TextEditingController();
+  TextEditingController title = TextEditingController();
+  TextEditingController desc = TextEditingController();
 
-   void getImage()async {
-    Get.bottomSheet(
-      Container(
-        width: MediaQuery.of(context).size.width-8,
-        height: 280,
-        decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius:BorderRadius.circular(50)
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text("Add Picture",style: TextStyle(fontSize: 24,fontWeight: FontWeight.w500,fontStyle: FontStyle.italic),),
-             Padding(
-               padding: const EdgeInsets.all(55.0),
-               child: Row(
-                 children: [
-                   Column(
-                     children: [
-                       IconButton(onPressed: () async {
-                         XFile? image=await ImagePicker().pickImage(source: ImageSource.camera);
-                         setState(() {
-                           isDone=true;
-                           settingImage=File(image!.path);
-                           Navigator.pop(context);
-                         });
-                       },
-                           icon:const Icon(Icons.camera ,size: 80,)),
-                       const Text("Camera",style: TextStyle(fontSize: 20),)
-                     ],
-                   ),
-                    const SizedBox(width: 90,),
-                     Column(
-                       children: [
-                         IconButton(onPressed: () async
-                         {
-                           XFile? image= await ImagePicker().pickImage(source: ImageSource.gallery);
-                           setState(() {
-                             isDone=true;
-                             settingImage=File(image!.path);
-                             Navigator.pop(context);
-                           });
-                         },
-                             icon:const Icon(Icons.image ,size: 80,)),
-                         const Text("Gallery",style: TextStyle(fontSize: 20),)
-                       ],
-                     ),
-                 ],
-               ),
-             )
-          ],
-        ),
-      )
-    );
-  }
   dynamic settingImage;
-  late bool isDone=false;
+  bool isDone = false;
+
   @override
   Widget build(BuildContext context) {
+    final blogPostProvider = Provider.of<BlogPost>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
-        title: const Text("Add Post",style: TextStyle(color: Colors.white),),
+        title: const Text("Add Post", style: TextStyle(color: Colors.white)),
       ),
       backgroundColor: Colors.black,
       body: Padding(
@@ -91,29 +38,36 @@ class _AddState extends State<Add> {
               Center(
                 child: InkWell(
                   borderRadius: BorderRadius.circular(35),
-                  onTap: (){
-                    getImage();
+                  onTap: () {
+                    _getImage(blogPostProvider);
                   },
                   child: Container(
-                    width: MediaQuery.of(context).size.width-25,
+                    width: MediaQuery.of(context).size.width - 25,
                     height: 300,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(35),
-                      border: Border.all(
-                        color: Colors.grey
-                      )
+                      border: Border.all(color: Colors.grey),
                     ),
-                    child: isDone?
-                    ClipRRect(borderRadius: BorderRadius.circular(35),
-                        child: Image.file(settingImage,fit: BoxFit.cover,))
-                        :
-                    const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add_box_outlined,color: Colors.grey,size: 40,),
-                        Text("Add Picture",style: TextStyle(color: Colors.grey,fontSize: 27),)
-                      ],
-                    ),
+                    child: isDone
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(35),
+                            child: Image.file(
+                              settingImage,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add_box_outlined,
+                                  color: Colors.grey, size: 40),
+                              Text(
+                                "Add Picture",
+                                style: TextStyle(
+                                    color: Colors.grey, fontSize: 27),
+                              ),
+                            ],
+                          ),
                   ),
                 ),
               ),
@@ -127,11 +81,15 @@ class _AddState extends State<Add> {
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
                     labelText: "Title",
-                    icon: const Icon(Icons.title_rounded,color: Colors.white,),
-                    labelStyle: const TextStyle(color: Colors.white,fontWeight: FontWeight.w400),
+                    icon: const Icon(
+                      Icons.title_rounded,
+                      color: Colors.white,
+                    ),
+                    labelStyle: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w400),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(25),
-                    )
+                    ),
                   ),
                 ),
               ),
@@ -144,22 +102,118 @@ class _AddState extends State<Add> {
                   maxLines: 14,
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(
-                      labelText: "Description",
-                      icon: const Icon(Icons.description_outlined,color: Colors.white,),
-                      labelStyle: const TextStyle(color: Colors.white,fontWeight: FontWeight.w400),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      )
+                    labelText: "Description",
+                    icon: const Icon(
+                      Icons.description_outlined,
+                      color: Colors.white,
+                    ),
+                    labelStyle: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w400),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
                   ),
                 ),
               ),
               OutlinedButton(
-                  onPressed: (){},
-                  child: const Text("    Post    ",style: TextStyle(fontSize: 18,color: Colors.white),)),
+                onPressed: () async {
+                  await _postBlog(blogPostProvider);
+                },
+                child: const Text(
+                  "    Post    ",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _getImage(BlogPost blogPostProvider) async {
+    Get.bottomSheet(
+      Container(
+        width: MediaQuery.of(context).size.width - 8,
+        height: 280,
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(50)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Text(
+              "Add Picture",
+              style: TextStyle(
+                  fontSize: 24, fontWeight: FontWeight.w500, fontStyle: FontStyle.italic),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(55.0),
+              child: Row(
+                children: [
+                  Column(
+                    children: [
+                      IconButton(
+                        onPressed: () async {
+                          await blogPostProvider.pickImageFromCamera();
+                          if (blogPostProvider.selectedImage != null) {
+                            setState(() {
+                              isDone = true;
+                              settingImage = blogPostProvider.selectedImage;
+                              Navigator.pop(context);
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.camera, size: 80),
+                      ),
+                      const Text(
+                        "Camera",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 90),
+                  Column(
+                    children: [
+                      IconButton(
+                        onPressed: () async {
+                          await blogPostProvider.pickImageFromGallery();
+                          if (blogPostProvider.selectedImage != null) {
+                            setState(() {
+                              isDone = true;
+                              settingImage = blogPostProvider.selectedImage;
+                              Navigator.pop(context);
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.image, size: 80),
+                      ),
+                      const Text(
+                        "Gallery",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _postBlog(BlogPost blogPostProvider) async {
+    blogPostProvider.titleController.text = title.text;
+    blogPostProvider.descController.text = desc.text;
+
+    await blogPostProvider.addPost(context);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Post added successfully!")),
+        
+      );
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>BlogHomePage()));
+    }
   }
 }

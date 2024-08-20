@@ -5,14 +5,14 @@ class BlogItem extends StatelessWidget {
   final bool isFullShade;
   final String imageUrl;
   final String title;
-  final String date;
+  // final String date;
 
   BlogItem({
     required this.isFullWidth,
     this.isFullShade = false,
     required this.imageUrl,
     required this.title,
-    required this.date,
+    // required this.date,
   });
 
   @override
@@ -47,7 +47,7 @@ class BlogItem extends StatelessWidget {
                       style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 5),
-                    Text(date, style: TextStyle(color: Colors.white)),
+                    // Text(date, style: TextStyle(color: Colors.white)),
                   ],
                 ),
               ),
