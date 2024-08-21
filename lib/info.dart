@@ -217,7 +217,7 @@ class _InfoState extends State<Info> {
                               padding: const EdgeInsets.all(15.0),
                               child: InkWell(
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(numKeyboard: true,changes: name["phoneNumber"].toString(), type: "Contact Info")));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(uid: widget.uid,numKeyboard: true,changes: name["phoneNumber"].toString(), type: "Contact Info")));
                                 },
                                 child:const Row(
                                   children: [

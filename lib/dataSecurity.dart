@@ -1,4 +1,5 @@
 import 'package:blog_app/accounts_view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,13 +7,29 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'changes.dart';
 
 class DataSecurity extends StatefulWidget {
-  const DataSecurity({super.key});
+  String uid;
+  DataSecurity({this.uid="",super.key});
 
   @override
   State<DataSecurity> createState() => _DataSecurityState();
 }
 
 class _DataSecurityState extends State<DataSecurity> {
+  late DocumentSnapshot name;
+  late bool isYes;
+  void getName()async{
+    name=await FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").get();
+    setState(() {
+      isYes=false;
+    });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isYes=true;
+    getName();
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -27,7 +44,7 @@ class _DataSecurityState extends State<DataSecurity> {
           icon: const FaIcon(FontAwesomeIcons.arrowLeft,color: Colors.white,),
         ),
       ),
-      body: Padding(
+      body: isYes?const Center(child: CircularProgressIndicator(color: Colors.greenAccent,),):Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
           decoration:  BoxDecoration(
@@ -61,7 +78,7 @@ class _DataSecurityState extends State<DataSecurity> {
                         padding: const EdgeInsets.all(15.0),
                         child: InkWell(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(changes: "yash@gmail.com", type: "Email")));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(uid: widget.uid,changes: name["email"].toString(), type: "Email")));
                           },
                           child:const Row(
                             children: [
@@ -76,7 +93,7 @@ class _DataSecurityState extends State<DataSecurity> {
                         padding: const EdgeInsets.all(15.0),
                         child: InkWell(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(changes: "72134", type: "Password")));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(uid: widget.uid,changes: "${name["password"].toString().substring(0,3)}XXXXXXXX", type: "Password")));
                           },
                           child:const Row(
                             children: [

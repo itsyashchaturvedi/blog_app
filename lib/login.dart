@@ -176,7 +176,6 @@ class _LoginpageState extends State<Loginpage> {
                                     textColor: Colors.white,
                                     fontSize: 16.0,
                                   );
-                                  print(FirebaseAuth.instance.currentUser!.uid);
                                   // Navigate to the home page
                                   Navigator.pushReplacement(
                                     context,

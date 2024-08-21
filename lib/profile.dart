@@ -106,7 +106,7 @@ class _ProfileState extends State<Profile> {
             child: InkWell(
               highlightColor: Colors.greenAccent,
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> const DataSecurity()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> DataSecurity(uid: widget.uid,)));
               },
               borderRadius: BorderRadius.circular(35),
               child: Container(

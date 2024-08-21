@@ -18,6 +18,7 @@ class _BlogHomePageState extends State<BlogHomePage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.black,
         title: const Center(
           child: Text(

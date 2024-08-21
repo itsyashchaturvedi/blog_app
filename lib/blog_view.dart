@@ -74,7 +74,7 @@ class _BlogViewState extends State<BlogView> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => BlogHomePage()));
+            Navigator.pop(context);
           },
         ),
         backgroundColor: Colors.black,

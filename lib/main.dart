@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
         ),
         home: FirebaseAuth.instance.currentUser == null
             ?  SplashScreen()
-            :  Navigation(), // Ensure this is const if no parameters are passed
+            :  Navigation(uid: FirebaseAuth.instance.currentUser!.uid,), // Ensure this is const if no parameters are passed
       ),
     );
   }
