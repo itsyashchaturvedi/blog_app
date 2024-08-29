@@ -8,6 +8,8 @@ import 'blog_view.dart';
 class Navigation extends StatefulWidget {
   final bool isTrue;
   String uid;
+  final bool isSignin;
+  final bool isfb;
   final String image;
   final String title;
   final String desc;
@@ -15,12 +17,14 @@ class Navigation extends StatefulWidget {
 
   Navigation({
     super.key,
+    this.isfb=false,
     this.isTrue = false,
     this.image = "",
     this.title = "",
     this.desc = "",
     this.author = "",
-    this.uid=""
+    this.uid="",
+    this.isSignin=false
   });
 
   @override
@@ -44,14 +48,14 @@ class _NavigationState extends State<Navigation> {
           title: widget.title, 
         ),
         const Add(),
-        Profile(uid: widget.uid,),
+        Profile(uid: widget.uid,isSignin: widget.isSignin,isfb: widget.isfb,),
       ];
     }
     else {
       screens = [
         const BlogHomePage(),
         const Add(),
-        Profile(uid: widget.uid,),
+        Profile(uid: widget.uid,isSignin: widget.isSignin,isfb: widget.isfb,),
       ];
     }
   }

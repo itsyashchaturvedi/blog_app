@@ -27,19 +27,22 @@ class _BlogHomePageState extends State<BlogHomePage> {
           ),
         ),
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Column(
-            children: [
-              _buildSearchBar(),
-              const SizedBox(height: 20),
-              _buildCategoryIcons(),
-              const SizedBox(height: 10),
-              _buildBlogPostsList(context),
-            ],
+      body: Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10),
+            child: Column(
+              children: [
+                _buildSearchBar(),
+                const SizedBox(height: 20),
+                _buildCategoryIcons(),
+                const SizedBox(height: 10),
+                _buildBlogPostsList(context),
+              ],
+            ),
           ),
         ),
       ),
@@ -66,7 +69,7 @@ class _BlogHomePageState extends State<BlogHomePage> {
       child: Row(
         children:  [
           CategoryIcon(Icons.surfing, 'Surfing'),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           CategoryIcon(Icons.sailing, 'Sailing'),
           SizedBox(width: 10),
           CategoryIcon(Icons.sports_basketball, 'Basketball'),

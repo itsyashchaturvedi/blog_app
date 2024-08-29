@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Settings extends StatefulWidget {
@@ -142,7 +143,12 @@ class _SettingsState extends State<Settings> {
                               TextButton(onPressed: (){
                                 setState(() {
                                   FirebaseAuth.instance.signOut();
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const Loginpage()));
+                                  FacebookAuth.i.logOut();
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const Loginpage()), // Replace with your login screen widget
+                                        (Route<dynamic> route) => false, // This removes all the previous routes
+                                  );
                                 });
                               },
                                   child: const Text("Yes")),

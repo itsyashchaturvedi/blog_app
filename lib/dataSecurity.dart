@@ -1,14 +1,18 @@
 import 'package:blog_app/accounts_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'changes.dart';
 
 class DataSecurity extends StatefulWidget {
   String uid;
-  DataSecurity({this.uid="",super.key});
+  bool isSignin;
+  bool isfb;
+  DataSecurity({this.isfb=false,this.isSignin=false,this.uid="",super.key});
 
   @override
   State<DataSecurity> createState() => _DataSecurityState();
@@ -17,9 +21,17 @@ class DataSecurity extends StatefulWidget {
 class _DataSecurityState extends State<DataSecurity> {
   late DocumentSnapshot name;
   late bool isYes;
+  late final fb;
   void getName()async{
     name=await FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").get();
     setState(() {
+      isYes=false;
+    });
+  }
+  void getFacebook() async{
+    final facebook=await FacebookAuth.i.getUserData(fields: "email");
+    setState(() {
+      fb=facebook;
       isYes=false;
     });
   }
@@ -28,6 +40,12 @@ class _DataSecurityState extends State<DataSecurity> {
     // TODO: implement initState
     super.initState();
     isYes=true;
+    if(widget.isfb){
+      getFacebook();
+    }
+    else if(widget.isfb!=true){
+      isYes=false;
+    }
     getName();
   }
   @override
@@ -78,6 +96,12 @@ class _DataSecurityState extends State<DataSecurity> {
                         padding: const EdgeInsets.all(15.0),
                         child: InkWell(
                           onTap: (){
+                            widget.isSignin?
+                                widget.isfb?
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(isSignin: widget.isSignin,uid: widget.uid,changes: fb["email"], type: "Email")))
+                            :
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(isSignin: widget.isSignin,uid: widget.uid,changes: FirebaseAuth.instance.currentUser?.email??"No data Provided", type: "Email")))
+                            :
                             Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(uid: widget.uid,changes: name["email"].toString(), type: "Email")));
                           },
                           child:const Row(
@@ -93,7 +117,10 @@ class _DataSecurityState extends State<DataSecurity> {
                         padding: const EdgeInsets.all(15.0),
                         child: InkWell(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(uid: widget.uid,changes: "${name["password"].toString().substring(0,3)}XXXXXXXX", type: "Password")));
+                            widget.isSignin?
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(isSignin: widget.isSignin,uid: widget.uid,changes: "No data due to Security Concern", type: "Password")))
+                            :
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(isSignin: widget.isSignin,uid: widget.uid,changes: "${name["password"].toString().substring(0,3)}XXXXXXXX", type: "Password")));
                           },
                           child:const Row(
                             children: [

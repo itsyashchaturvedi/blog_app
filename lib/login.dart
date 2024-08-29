@@ -21,8 +21,16 @@ class _LoginpageState extends State<Loginpage> {
   bool _isHovering = false;
   bool _isObsured = true;
   void facebookSignin() async{
-    await FacebookAuth.i.login(permissions: ['email','public_profile']);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Navigation(uid: "",)));
+    try{
+      await FacebookAuth.i.login(permissions: ['email','public_profile']);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Navigation(uid: "",isSignin: true,isfb: true,)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Center(child: Text("Welcome to Syllex Blog"))));
+    }
+    catch(error)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${error.toString()}")));
+    }
+
   }
   void googleSignin() async{
     GoogleSignIn googleSignIn=GoogleSignIn();
@@ -40,7 +48,7 @@ class _LoginpageState extends State<Loginpage> {
     catch(error){
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${error.toString()}")));
     }
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Navigation(uid: "",)));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Navigation(isSignin:true,uid: "",)));
   }
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailcontroller = TextEditingController();
@@ -172,8 +180,8 @@ class _LoginpageState extends State<Loginpage> {
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.grey,
-                                    textColor: Colors.white,
+                                    backgroundColor: Colors.greenAccent,
+                                    textColor: Colors.black,
                                     fontSize: 16.0,
                                   );
                                   // Navigate to the home page
@@ -183,7 +191,9 @@ class _LoginpageState extends State<Loginpage> {
                                         builder: (context) => Navigation(uid: FirebaseAuth.instance.currentUser!.uid.toString(),)),
                                   );
                                 }).onError((error, stackTrace){
-                                          print("Error:$error");
+                                          Fluttertoast.showToast(msg: "Wrong Credentials! Please Check you Email or Password.",
+                                          backgroundColor: Colors.red,
+                                          gravity: ToastGravity.BOTTOM);
                                         });
                               }
                             },

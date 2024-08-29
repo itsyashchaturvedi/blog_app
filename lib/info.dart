@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/widgets.dart';
@@ -12,8 +13,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Info extends StatefulWidget {
   String name;
+  bool isSignin;
+  bool isfb;
   String uid;
-  Info({super.key,this.uid="",required this.name});
+  Info({this.isfb=false,super.key,this.uid="",required this.name,required this.isSignin});
 
   @override
   State<Info> createState() => _InfoState();
@@ -82,7 +85,15 @@ class _InfoState extends State<Info> {
     );
   }
   late DocumentSnapshot name;
+   late final fb;
+  Future<void> getFacebook()async{
+    final userdata=await FacebookAuth.i.getUserData(fields: "name,email,picture.width(200)");
+  setState(() {
+    fb= userdata;
+    isYes=false;
+  });
 
+  }
   void getName()async{
     name=await FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").get();
     setState(() {
@@ -93,8 +104,19 @@ class _InfoState extends State<Info> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    isYes=true;
-    getName();
+    if (widget.isfb) {
+      getFacebook();
+      isYes=true;
+    }
+    else {
+      if (widget.isSignin) {
+        isYes = false;
+      }
+      else {
+        isYes = true;
+      }
+      getName();
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -131,7 +153,8 @@ class _InfoState extends State<Info> {
                     Padding(
                     padding: const EdgeInsets.only(top: 60,bottom: 15),
                      child: Center(
-                       child: Hero(tag: 'info',
+                       child: Hero(
+                         tag: 'info',
                            child:
                                 Stack(
                                   children :[
@@ -145,13 +168,21 @@ class _InfoState extends State<Info> {
                                         fit: BoxFit.cover,width: 150,height: 250,),
                                     ):ClipRRect(
                                       borderRadius: BorderRadius.circular(100),
-                                      child: Image.network(
-                                          FirebaseAuth.instance.currentUser!.photoURL??
-                                          "https://cdn-icons-png.flaticon.com/512/21/21104.png",
+                                      child: widget.isSignin?
+                                      widget.isfb?
+                                      Image.network(
+                                        fb['picture']['data']['url'],
+                                        fit: BoxFit.cover,width: 150,height: 270,)
+                                          :
+                                      Image.network(
+                                          FirebaseAuth.instance.currentUser?.photoURL??"",
+                                        fit: BoxFit.cover,width: 150,height: 270,):
+                                      Image.network(
+                                            "https://cdn-icons-png.flaticon.com/512/21/21104.png",
                                         fit: BoxFit.cover,width: 150,height: 270,),
                                     ),
                                   ),
-                                  Positioned(left: 90,top: 85,child: CircleAvatar(
+                                  Positioned(left: 90,top: 85,child: widget.isSignin?const SizedBox(): CircleAvatar(
                                     backgroundColor: Colors.indigo,
                                     child: IconButton(onPressed: (){
                                     getImage();
@@ -164,8 +195,12 @@ class _InfoState extends State<Info> {
                    ),
                     ),
 
-                  Text(FirebaseAuth.instance.currentUser!.displayName??name["name"].toString(),style: const TextStyle(color: Colors.black,fontSize: 25,fontWeight: FontWeight.w600),),
-
+                  widget.isSignin?widget.isfb?
+                  Text(fb['name'],style: const TextStyle(color: Colors.black,fontSize: 25,fontWeight: FontWeight.w600),)
+                      :
+                  Text(FirebaseAuth.instance.currentUser!.displayName??"",style: const TextStyle(color: Colors.black,fontSize: 25,fontWeight: FontWeight.w600),)
+                  :
+                  Text(name["name"].toString(),style: const TextStyle(color: Colors.black,fontSize: 25,fontWeight: FontWeight.w600),),
                   const SizedBox(height: 30,),
                   const Padding(
                     padding: EdgeInsets.fromLTRB(17, 0, 17, 30),
@@ -187,7 +222,13 @@ class _InfoState extends State<Info> {
                               padding: const EdgeInsets.all(15.0),
                               child: InkWell(
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(uid: widget.uid,changes: name["name"], type: "Name")));
+                                  widget.isSignin?
+                                      widget.isfb?
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(isSignin: widget.isSignin,uid: widget.uid,changes: fb['name'], type: "Name")))
+                                          :
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(isSignin: widget.isSignin,uid: widget.uid,changes: FirebaseAuth.instance.currentUser?.displayName??"", type: "Name")))
+                                      :
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(isSignin: widget.isSignin,uid: widget.uid,changes: name["name"], type: "Name")));
                                 },
                                 child: const Row(
                                   children: [
@@ -202,7 +243,7 @@ class _InfoState extends State<Info> {
                               padding: const EdgeInsets.all(15.0),
                               child: InkWell(
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(uid: widget.uid,dob: "2024-01-27",dateInfo: true,changes: "", type: "Date of Birth")));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(isSignin: widget.isSignin,uid: widget.uid,dob: "2024-01-27",dateInfo: true,changes: "", type: "Date of Birth")));
                                 },
                                 child:const Row(
                                   children: [
@@ -217,7 +258,12 @@ class _InfoState extends State<Info> {
                               padding: const EdgeInsets.all(15.0),
                               child: InkWell(
                                 onTap: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(uid: widget.uid,numKeyboard: true,changes: name["phoneNumber"].toString(), type: "Contact Info")));
+                                  widget.isSignin?widget.isfb?
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(isSignin: widget.isSignin,uid: widget.uid,numKeyboard: true,changes: "No data due to security concern", type: "Contact Info")))
+                                  :
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(isSignin: widget.isSignin,uid: widget.uid,numKeyboard: true,changes: "No data due to security concern", type: "Contact Info")))
+                                  :
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> Changes(isSignin: widget.isSignin,uid: widget.uid,numKeyboard: true,changes: name["phoneNumber"].toString(), type: "Contact Info")));
                                 },
                                 child:const Row(
                                   children: [
