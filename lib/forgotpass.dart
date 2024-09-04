@@ -1,6 +1,8 @@
-import 'package:blog_app/otppass.dart';
 import 'package:blog_app/colorpack.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -10,6 +12,7 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  TextEditingController controller=TextEditingController();
   @override
   Widget build(BuildContext context) {
     final screenWidth=MediaQuery.of(context).size.width;
@@ -17,7 +20,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       appBar: AppBar(
         backgroundColor: AppColors.bgcolor,
         foregroundColor: AppColors.textcolor,
-        leading: IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back_ios)),
+        leading: IconButton(onPressed: (){
+          Navigator.pop(context);
+        }, icon: const Icon(Icons.arrow_back_ios)),
       ),
       backgroundColor: AppColors.bgcolor,
       body: Container(
@@ -33,6 +38,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               Text("Enter the email address with your account and we'll send an email with confirmation to reset your password.",style: TextStyle(color: AppColors.textcolor),),
               SizedBox(height: 20,),
               TextFormField(
+                controller: controller,
                 style: TextStyle(color: AppColors.textcolor),
                 decoration: InputDecoration(
                     labelText: "Email",
@@ -49,7 +55,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0))),
                         onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>EmailVerificationPage()));
+                          if(controller.text==null){
+                            Fluttertoast.showToast(msg: "Please Enter a valid email",
+                            backgroundColor: Colors.red);
+                          }
+                          else{
+                            FirebaseAuth.instance.sendPasswordResetEmail(email: controller.text).then((onValue){
+                              Fluttertoast.showToast(msg: "Password send to Email",backgroundColor: Colors.greenAccent);
+                            }).onError((error,StackTrace){
+                              Fluttertoast.showToast(msg: "Please Enter a valid Email",backgroundColor: Colors.red);
+                              Navigator.pop(context);
+                            });
+                          }
                         }, child: Text("Send Code",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15,color: Colors.black),))),
               ),
             ],

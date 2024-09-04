@@ -1,5 +1,6 @@
 import 'package:blog_app/controller/blogprovider.dart';
 import 'package:blog_app/homepage.dart';
+import 'package:blog_app/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -117,7 +118,16 @@ class _AddState extends State<Add> {
               ),
               OutlinedButton(
                 onPressed: () async {
-                  await _postBlog(blogPostProvider);
+                  if(title.text.isEmpty){
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Title must not be Empty"),backgroundColor: Colors.redAccent.shade200));
+                  }
+                  else if(desc.text.length<10){
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Description must be of 10 characters at least"),backgroundColor: Colors.redAccent.shade200,));
+                  }
+                  else{
+                    await _postBlog(blogPostProvider);
+                  }
+
                 },
                 child: const Text(
                   "    Post    ",
@@ -171,7 +181,7 @@ class _AddState extends State<Add> {
                       ),
                     ],
                   ),
-                  const SizedBox(width: 90),
+                  Expanded(child: SizedBox()),
                   Column(
                     children: [
                       IconButton(
@@ -213,7 +223,7 @@ class _AddState extends State<Add> {
         const SnackBar(content: Text("Post added successfully!")),
         
       );
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>BlogHomePage()));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>Navigation()));
     }
   }
 }

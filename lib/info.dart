@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:blog_app/changes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,7 +23,7 @@ class Info extends StatefulWidget {
 }
 
 class _InfoState extends State<Info> {
-  bool isDone=false;
+  late bool isDone;
   late bool isYes;
   dynamic settingImage;
   void getImage()async {
@@ -52,11 +52,12 @@ class _InfoState extends State<Info> {
                             settingImage=File(image!.path);
                             Navigator.pop(context);
                           });
-                        },icon:const Icon(Icons.camera ,size: 80,)),
+                          },
+                            icon:const Icon(Icons.camera ,size: 80,)),
                         const Text("Camera",style: TextStyle(fontSize: 20),)
                       ],
                     ),
-                    const SizedBox(width: 90,),
+                    const Expanded(child: SizedBox()),
                     Column(
                       children: [
                         IconButton(onPressed: () async
@@ -64,14 +65,11 @@ class _InfoState extends State<Info> {
                           XFile? image= await ImagePicker().pickImage(source: ImageSource.gallery);
                           setState(() {
                             isDone=true;
-                            settingImage=File(image!.path);
-                            Navigator.pop(context);
+                            settingImage=image;
                           });
-                          Map<String,dynamic> img={
-                            "image":""
-                          };
-                        //  FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").up;
-                        },
+                          uploadImage();
+                          Navigator.pop(context);
+                          },
                             icon:const Icon(Icons.image ,size: 80,)),
                         const Text("Gallery",style: TextStyle(fontSize: 20),)
                       ],
@@ -84,6 +82,15 @@ class _InfoState extends State<Info> {
         )
     );
   }
+  Future<void> uploadImage()async{
+    final image=File(settingImage!.path);
+    final path1="profile/${DateTime.now().toString()}";
+    final ref=FirebaseStorage.instance.ref().child(path1);
+    final upload=ref.putFile(image);
+    TaskSnapshot snapshot=await upload.whenComplete(() {});
+    final downloadUrl=await snapshot.ref.getDownloadURL();
+    FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").update({"profilePicture": "${downloadUrl}"});
+  }
   late DocumentSnapshot name;
    late final fb;
   Future<void> getFacebook()async{
@@ -94,10 +101,19 @@ class _InfoState extends State<Info> {
   });
 
   }
-  void getName()async{
+  void getName() async {
     name=await FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").get();
     setState(() {
       isYes=false;
+    });
+  }
+  late Map<String,dynamic> firebase;
+  late bool isfire;
+  void scanFirebase() async {
+    var fire= await FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").get();
+    setState(() {
+      firebase=fire.data() as Map<String, dynamic>;
+      isfire=false;
     });
   }
   @override
@@ -114,14 +130,16 @@ class _InfoState extends State<Info> {
       }
       else {
         isYes = true;
+        scanFirebase();
+        isDone=true;
+        isfire=true;
       }
       getName();
     }
   }
   @override
   Widget build(BuildContext context) {
-    return isYes?const Center(child: CircularProgressIndicator(color: Colors.greenAccent,),)
-        :Scaffold(
+    return isYes || isfire?const Center(child: CircularProgressIndicator(color: Colors.greenAccent,),) :Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         leading: IconButton(
@@ -163,10 +181,15 @@ class _InfoState extends State<Info> {
                                     radius: 65,
                                     child: isDone? ClipRRect(
                                       borderRadius: BorderRadius.circular(100),
-                                      child: Image.file(
-                                        settingImage,
+                                      child:  Image.network(
+                                        firebase.containsKey("profilePicture")?
+                                        firebase["profilePicture"]
+                                            :
+                                        "https://cdn-icons-png.flaticon.com/512/21/21104.png",
                                         fit: BoxFit.cover,width: 150,height: 250,),
-                                    ):ClipRRect(
+                                     )
+                                        :
+                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(100),
                                       child: widget.isSignin?
                                       widget.isfb?

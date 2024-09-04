@@ -176,6 +176,13 @@ class _SignuppageState extends State<SignupPage> {
                           ),
                         ),
                         onPressed: () async {
+                          if(passwordController.text.length<8){
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Password must be of minimum 8 characters")));
+                          }
+                          else if(emailController.text.contains("@")==false){
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Enter a valid email having @ in it")));
+                          }
+                          else{
                           if (formKey.currentState!.validate()) {
                             try {
                               UserCredential credential =
@@ -198,9 +205,9 @@ class _SignuppageState extends State<SignupPage> {
                               Fluttertoast.showToast(
                                 msg: "Registered Successfully",
                                 toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
+                                gravity: ToastGravity.BOTTOM,
                                 timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.grey,
+                                backgroundColor: Colors.greenAccent.shade200,
                                 textColor: Colors.white,
                                 fontSize: 16,
                               );
@@ -220,6 +227,7 @@ class _SignuppageState extends State<SignupPage> {
                               );
                               print("Error during registration: $e");
                             }
+                          }
                           }
                         },
                         child: const Text(

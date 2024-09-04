@@ -118,6 +118,7 @@ class _BlogViewState extends State<BlogView> {
                             toastLength: Toast.LENGTH_SHORT,
                             backgroundColor: Colors.green,
                           );
+
                         },
                         icon: const Icon(Icons.download, color: Colors.white),
                       ),

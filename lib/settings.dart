@@ -9,14 +9,14 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class Settings extends StatefulWidget {
-  const Settings({super.key});
+class Setting extends StatefulWidget {
+  const Setting({super.key});
 
   @override
-  State<Settings> createState() => _SettingsState();
+  State<Setting> createState() => _SettingState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingState extends State<Setting> {
   late double opacity;
   late bool isTrue;
   late bool isSecond;

@@ -3,6 +3,7 @@ import 'package:blog_app/downloads.dart';
 import 'package:blog_app/info.dart';
 import 'package:blog_app/settings.dart';
 import 'package:blog_app/user_post.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -37,18 +38,31 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
+    isfire=true;
     if (widget.isfb) {
       isLoading=true;
       getFacebook();
     }
+    else
+      {
+        scanFirebase();
+      }
     super.initState();
   }
-
+  late Map<String,dynamic> firebase;
+  late bool isfire;
+  void scanFirebase() async {
+    var fire= await FirebaseFirestore.instance.collection("Users").doc("${widget.uid}").get();
+    setState(() {
+      firebase=fire.data() as Map<String, dynamic>;
+      isfire=false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: isLoading?const Center(child: CircularProgressIndicator(color: Colors.greenAccent,),):Column(
+      body: isLoading || isfire?const Center(child: CircularProgressIndicator(color: Colors.greenAccent,),):Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
@@ -85,12 +99,23 @@ class _ProfileState extends State<Profile> {
                           fit: BoxFit.fill,
                           width: 150,
                         )
-                            : Image.network(
+                            :
+                          widget.isSignin?
+                           Image.network(
                           FirebaseAuth.instance.currentUser!.photoURL ??
                               "https://cdn-icons-png.flaticon.com/512/21/21104.png",
                           fit: BoxFit.fill,
                           width: 150,
-                        ),
+                        ):
+                          Image.network(
+                            firebase.containsKey("profilePicture")?
+                            firebase["profilePicture"]
+                            :
+                            "https://cdn-icons-png.flaticon.com/512/21/21104.png",
+                            fit: BoxFit.cover,
+                            width: 156.5,
+                            height: 270,
+                          ),
                       ),
                     ),
                   ),
@@ -263,7 +288,7 @@ class _ProfileState extends State<Profile> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Settings()),
+                  MaterialPageRoute(builder: (context) =>  const Setting()),
                 );
               },
               borderRadius: BorderRadius.circular(35),
